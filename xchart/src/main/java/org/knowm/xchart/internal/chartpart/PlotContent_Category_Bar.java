@@ -163,10 +163,14 @@ public class PlotContent_Category_Bar<ST extends Styler, S extends Series> exten
       double previousY = -Double.MAX_VALUE;
 
       Iterator<? extends Number> yItr = series.getYData().iterator();
-      Iterator<? extends Number> ebItr = null;
-      Collection<? extends Number> errorBars = series.getExtraValues();
-      if (errorBars != null) {
-        ebItr = errorBars.iterator();
+      Iterator<? extends Number> ebItrLow = null, ebItrHigh = null;
+      Collection<? extends Number> errorBarsLow = series.getExtraValues();
+      Collection<? extends Number> errorBarsHigh = series.getExtraValues2();
+      if (errorBarsLow != null) {
+        ebItrLow = errorBarsLow.iterator();
+      }
+      if (errorBarsHigh != null) {
+        ebItrHigh = errorBarsHigh.iterator();
       }
 
       //Stepped bars are drawn in chunks
@@ -453,9 +457,7 @@ public class PlotContent_Category_Bar<ST extends Styler, S extends Series> exten
 
         // paint error bars
 
-        if (errorBars != null) {
-
-          double eb = ebItr.next().doubleValue();
+        if (ebItrLow != null) {
 
           // set error bar style
           if (stylerCategory.isErrorBarsColorSeriesColor()) {
@@ -466,12 +468,24 @@ public class PlotContent_Category_Bar<ST extends Styler, S extends Series> exten
           }
           g.setStroke(errorBarStroke);
 
-          // Top value
-          double errorBarLength = ((eb) / (yMax - yMin) * yTickSpace);
-          double topEBOffset = yOffset - errorBarLength;
+          double ebLow = ebItrLow.next().doubleValue();
+          final double topEBOffset, bottomEBOffset;
 
-          // Bottom value
-          double bottomEBOffset = yOffset + errorBarLength;
+          if (ebItrHigh != null) {
+            double ebHigh = ebItrHigh.next().doubleValue();
+
+            // Top value
+            double ebTransform = getBounds().getHeight() - (yTopMargin + (ebHigh - yMin) / (yMax - yMin) * yTickSpace);
+            topEBOffset = getBounds().getY() + ebTransform;
+
+            // Bottom value
+            ebTransform = getBounds().getHeight() - (yTopMargin + (ebLow - yMin) / (yMax - yMin) * yTickSpace);
+            bottomEBOffset = getBounds().getY() + ebTransform;
+          } else {
+            double errorBarLength = ((ebLow) / (yMax - yMin) * yTickSpace);
+            topEBOffset = yOffset - errorBarLength;
+            bottomEBOffset = yOffset + errorBarLength;
+          }
 
           // Draw it
           double errorBarOffset = xOffset + barWidth / 2;

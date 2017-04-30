@@ -68,11 +68,13 @@ public class CategorySeries extends MarkersSeries {
    * @param name
    * @param xData
    * @param yData
-   * @param errorBars
+   * @param errorBarsLow
+   * @param errorBarsHigh
    */
-  public CategorySeries(String name, List<?> xData, List<? extends Number> yData, List<? extends Number> errorBars) {
+  public CategorySeries(String name, List<?> xData, List<? extends Number> yData, List<? extends Number> errorBarsLow,
+                        List<? extends Number> errorBarsHigh) {
 
-    super(name, xData, yData, errorBars);
+    super(name, xData, yData, errorBarsLow, errorBarsHigh);
   }
 
   public CategorySeriesRenderStyle getChartCategorySeriesRenderStyle() {

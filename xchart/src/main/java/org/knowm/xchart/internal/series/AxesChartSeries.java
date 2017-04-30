@@ -43,6 +43,8 @@ public abstract class AxesChartSeries extends Series {
 
   List<? extends Number> extraValues;
 
+  List<? extends Number> extraValues2;
+
   /**
    * the minimum value of axis range
    */
@@ -219,6 +221,11 @@ public abstract class AxesChartSeries extends Series {
   public Collection<? extends Number> getExtraValues() {
 
     return extraValues;
+  }
+
+  public Collection<? extends Number> getExtraValues2() {
+
+    return extraValues2;
   }
 
   public double getXMin() {

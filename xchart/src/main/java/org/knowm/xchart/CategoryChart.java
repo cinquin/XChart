@@ -99,7 +99,7 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
    */
   public CategorySeries addSeries(String seriesName, double[] xData, double[] yData) {
 
-    return addSeries(seriesName, xData, yData, null);
+    return addSeries(seriesName, xData, yData, null, null);
   }
 
   /**
@@ -108,12 +108,20 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
    * @param seriesName
    * @param xData      the X-Axis data
    * @param xData      the Y-Axis data
-   * @param errorBars  the error bar data
+   * @param errorBarsLow  the error bar data
+   * @param errorBarsHigh  the error bar data
    * @return A Series object that you can set properties on
    */
-  public CategorySeries addSeries(String seriesName, double[] xData, double[] yData, double[] errorBars) {
+  public CategorySeries addSeries(String seriesName, double[] xData, double[] yData, double[] errorBarsLow, double[] errorBarsHigh) {
 
-    return addSeries(seriesName, Utils.getNumberListFromDoubleArray(xData), Utils.getNumberListFromDoubleArray(yData), Utils.getNumberListFromDoubleArray(errorBars));
+    return addSeries(seriesName, Utils.getNumberListFromDoubleArray(xData), Utils.getNumberListFromDoubleArray(yData),
+        Utils.getNumberListFromDoubleArray(errorBarsLow), Utils.getNumberListFromDoubleArray(errorBarsHigh));
+  }
+
+  public CategorySeries addSeries(String seriesName, double[] xData, double[] yData, double[] errorBarsLow) {
+
+    return addSeries(seriesName, Utils.getNumberListFromDoubleArray(xData), Utils.getNumberListFromDoubleArray(yData),
+        Utils.getNumberListFromDoubleArray(errorBarsLow), null);
   }
 
   /**
@@ -126,7 +134,7 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
    */
   public CategorySeries addSeries(String seriesName, int[] xData, int[] yData) {
 
-    return addSeries(seriesName, xData, yData, null);
+    return addSeries(seriesName, xData, yData, null, null);
   }
 
   /**
@@ -135,12 +143,14 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
    * @param seriesName
    * @param xData      the X-Axis data
    * @param xData      the Y-Axis data
-   * @param errorBars  the error bar data
+   * @param errorBarsLow  the error bar data
+   * @param errorBarsHigh  the error bar data
    * @return A Series object that you can set properties on
    */
-  public CategorySeries addSeries(String seriesName, int[] xData, int[] yData, int[] errorBars) {
+  public CategorySeries addSeries(String seriesName, int[] xData, int[] yData, int[] errorBarsLow, int[] errorBarsHigh) {
 
-    return addSeries(seriesName, Utils.getNumberListFromIntArray(xData), Utils.getNumberListFromIntArray(yData), Utils.getNumberListFromIntArray(errorBars));
+    return addSeries(seriesName, Utils.getNumberListFromIntArray(xData), Utils.getNumberListFromIntArray(yData),
+        Utils.getNumberListFromIntArray(errorBarsLow), Utils.getNumberListFromIntArray(errorBarsHigh));
   }
 
   /**
@@ -153,7 +163,7 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
    */
   public CategorySeries addSeries(String seriesName, List<?> xData, List<? extends Number> yData) {
 
-    return addSeries(seriesName, xData, yData, null);
+    return addSeries(seriesName, xData, yData, null, null);
   }
 
   /**
@@ -162,13 +172,15 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
    * @param seriesName
    * @param xData      the X-Axis data
    * @param yData      the Y-Axis data
-   * @param errorBars  the error bar data
+   * @param errorBarsLow  the error bar data
+   * @param errorBarsHigh  the error bar data
    * @return A Series object that you can set properties on
    */
-  public CategorySeries addSeries(String seriesName, List<?> xData, List<? extends Number> yData, List<? extends Number> errorBars) {
+  public CategorySeries addSeries(String seriesName, List<?> xData, List<? extends Number> yData,
+                                  List<? extends Number> errorBarsLow, List<? extends Number> errorBarsHigh) {
 
     // Sanity checks
-    sanityCheck(seriesName, xData, yData, errorBars);
+    sanityCheck(seriesName, xData, yData, errorBarsLow, errorBarsHigh);
 
     CategorySeries series = null;
     if (xData != null) {
@@ -178,15 +190,21 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
         throw new IllegalArgumentException("X and Y-Axis sizes are not the same!!!");
       }
 
-      series = new CategorySeries(seriesName, xData, yData, errorBars);
+      series = new CategorySeries(seriesName, xData, yData, errorBarsLow, errorBarsHigh);
     }
     else { // generate xData
-      series = new CategorySeries(seriesName, Utils.getGeneratedData(yData.size()), yData, errorBars);
+      series = new CategorySeries(seriesName, Utils.getGeneratedData(yData.size()), yData, errorBarsLow, errorBarsHigh);
     }
 
     seriesMap.put(seriesName, series);
 
     return series;
+  }
+
+  public CategorySeries addSeries(String seriesName, List<?> xData, List<? extends Number> yData,
+                                  List<? extends Number> errorBarsLow) {
+
+    return addSeries(seriesName, xData, yData, errorBarsLow, null);
   }
 
   /**
@@ -239,7 +257,8 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
   // Internal Members and Methods ///////////////////
   ///////////////////////////////////////////////////
 
-  private void sanityCheck(String seriesName, List<?> xData, List<? extends Number> yData, List<? extends Number> errorBars) {
+  private void sanityCheck(String seriesName, List<?> xData, List<? extends Number> yData,
+                           List<? extends Number> errorBarsLow, List<? extends Number> errorBarsHigh) {
 
     if (seriesMap.keySet().contains(seriesName)) {
       throw new IllegalArgumentException("Series name >" + seriesName + "< has already been used. Use unique names for each series!!!");
@@ -253,7 +272,10 @@ public class CategoryChart extends Chart<CategoryStyler, CategorySeries> {
     if (xData != null && xData.size() == 0) {
       throw new IllegalArgumentException("X-Axis data cannot be empty!!!");
     }
-    if (errorBars != null && errorBars.size() != yData.size()) {
+    if (errorBarsLow != null && errorBarsLow.size() != yData.size()) {
+      throw new IllegalArgumentException("Error bars and Y-Axis sizes are not the same!!!");
+    }
+    if (errorBarsHigh != null && errorBarsHigh.size() != yData.size()) {
       throw new IllegalArgumentException("Error bars and Y-Axis sizes are not the same!!!");
     }
   }

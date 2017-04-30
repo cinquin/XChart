@@ -52,12 +52,18 @@ public abstract class MarkersSeries extends AxesChartSeries {
    * @param yData
    * @param extraValues
    */
-  public MarkersSeries(String name, List<?> xData, List<? extends Number> yData, List<? extends Number> extraValues) {
+  public MarkersSeries(String name, List<?> xData, List<? extends Number> yData, List<? extends Number> extraValues,
+      List<? extends Number> extraValues2) {
 
     super(name, xData, yData);
 
     this.extraValues = extraValues;
+    this.extraValues2 = extraValues2;
     calculateMinMax();
+  }
+
+  public MarkersSeries(String name, List<?> xData, List<? extends Number> yData, List<? extends Number> extraValues) {
+    this(name, xData, yData, extraValues, null);
   }
 
   @Override

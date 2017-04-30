@@ -59,7 +59,7 @@ public class BarChart09 implements ExampleChart<CategoryChart> {
     // Series
     chart.addSeries("China", new ArrayList<String>(Arrays.asList(new String[]{"A", "B", "C", "D", "E"})), new ArrayList<Number>(Arrays.asList(new Number[]{11, 23, 20, 36, 5})));
     CategorySeries series2 = chart.addSeries("Korea", new ArrayList<String>(Arrays.asList(new String[]{"A", "B", "C", "D", "E"})), new ArrayList<Number>(Arrays.asList(new Number[]{13, 25, 22, 38,
-        7})), new ArrayList<Number>(Arrays.asList(new Number[]{1, 3, 2, 1, 2})));
+        7})), new ArrayList<Number>(Arrays.asList(new Number[]{10, 20, 21, 30, 2})), new ArrayList<Number>(Arrays.asList(new Number[]{15, 30, 29, 45, 9})));
     series2.setChartCategorySeriesRenderStyle(CategorySeriesRenderStyle.Line);
     CategorySeries series3 = chart.addSeries("World Ave.", new ArrayList<String>(Arrays.asList(new String[]{"A", "B", "C", "D", "E"})), new ArrayList<Number>(Arrays.asList(new Number[]{20, 22,
         18, 36, 32})));
